@@ -1,28 +1,54 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "wxt",
-    "dev:firefox": "wxt -b firefox",
-    "build": "wxt build",
-    "build:firefox": "wxt build -b firefox",
-    "zip": "wxt zip",
-    "zip:firefox": "wxt zip -b firefox",
-    "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
-  },
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@wxt-dev/module-react": "^1.1.0",
-    "typescript": "^5.5.4",
-    "wxt": "^0.19.1"
-  }
+	"name": "nodox",
+	"description": "Chrome Extension to Keep Sensitive Information Hidden",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"start:dev": "wxt",
+		"start:dev:firefox": "wxt -b firefox",
+		"build": "wxt build",
+		"build:firefox": "wxt build -b firefox",
+		"zip": "wxt zip",
+		"zip:firefox": "wxt zip -b firefox",
+		"compile": "tsc --noEmit",
+		"postinstall": "wxt prepare",
+		"lint": "eslint --ext .js,.ts,.jsx,.tsx, src/",
+		"clean": "shx rm -rf node_modules && shx rm -rf .turbo && shx rm -rf .wxt && shx rm -rf dist",
+		"install:clean": "pnpm run clean && pnpm install"
+	},
+	"dependencies": {
+		"@radix-ui/react-icons": "^1.3.0",
+		"@radix-ui/react-slot": "^1.1.0",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.1.1",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"shx": "^0.3.4",
+		"tailwind-merge": "^2.5.2",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@blgc/config": "^0.0.23",
+		"@ianvs/prettier-plugin-sort-imports": "^4.3.1",
+		"@types/react": "^18.3.3",
+		"@types/react-dom": "^18.3.0",
+		"@wxt-dev/module-react": "^1.1.0",
+		"autoprefixer": "^10.4.20",
+		"eslint": "^8.57.0",
+		"postcss": "^8.4.45",
+		"prettier": "^3.3.3",
+		"prettier-plugin-tailwindcss": "^0.6.6",
+		"tailwindcss": "^3.4.11",
+		"typescript": "^5.5.4",
+		"wxt": "^0.19.1"
+	},
+	"packageManager": "pnpm@9.2.0",
+	"pnpm": {
+		"updateConfig": {
+			"ignoreDependencies": [
+				"eslint"
+			]
+		}
+	}
 }

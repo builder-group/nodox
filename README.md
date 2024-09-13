@@ -1,3 +1,3 @@
-# WXT + React
+# NoDox 
 
-This template should help get you started developing with React in WXT.
+Chrome Extension to Keep Sensitive Information Hidden.

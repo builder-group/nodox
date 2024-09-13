@@ -13,9 +13,9 @@ stats.html
 stats-*.json
 .wxt
 web-ext.config.ts
+dist
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
