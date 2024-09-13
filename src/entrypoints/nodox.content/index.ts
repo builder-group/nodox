@@ -1,7 +1,6 @@
 import { defineContentScript } from 'wxt/sandbox';
 
 const BLUR_ATTRIBUTE = 'data-blurred';
-
 const BLACKLISTED_HTML_TAGS = [
 	'script',
 	'style',
