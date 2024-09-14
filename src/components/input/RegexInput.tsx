@@ -18,7 +18,11 @@ export const RegexInput = React.forwardRef<HTMLInputElement, TProps>((props, ref
 
 	return (
 		<div className={cn('relative', containerClassName)}>
-			<RegexText value={value} ref={regexTextRef} className="pointer-events-none absolute" />
+			<RegexText
+				value={value}
+				ref={regexTextRef}
+				className="pointer-events-none absolute px-3 py-2"
+			/>
 			<AdvancedInput
 				{...other}
 				ref={ref}

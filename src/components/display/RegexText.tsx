@@ -41,10 +41,7 @@ export const RegexText = React.forwardRef<HTMLDivElement, TProps>((props, ref) =
 	return (
 		<div
 			ref={ref}
-			className={cn(
-				'inset-0 overflow-hidden whitespace-pre px-3 py-2 font-mono text-sm',
-				className
-			)}
+			className={cn('inset-0 overflow-hidden whitespace-pre font-mono text-sm', className)}
 			{...other}
 		>
 			{highlightedElements}

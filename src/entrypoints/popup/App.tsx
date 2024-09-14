@@ -2,20 +2,27 @@ import React from 'react';
 import { extractErrorData } from '@blgc/utils';
 import {
 	Button,
+	EyeClosedIcon,
 	EyeOpenIcon,
 	MinusCircledIcon,
 	PlusCircledIcon,
 	RegexInput,
-	RegexText
+	RegexText,
+	ScrollArea,
+	ScrollBar,
+	Toggle
 } from '@/components';
 
 export const App: React.FC = () => {
-	const [patterns, setPatterns] = useState<RegExp[]>([/Benno/, /Jeff/]);
+	const [patterns, setPatterns] = useState<{ regex: RegExp; isActive: boolean }[]>([
+		{ regex: /Benno/, isActive: true }
+	]);
 	const [currentPattern, setCurrentPattern] = useState<{
 		regex: RegExp | null;
 		raw: string;
 		error: string | null;
 	}>({ regex: null, raw: '', error: null });
+	const [, forceRender] = React.useReducer((s: number) => s + 1, 0);
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
 		const patternString = e.target.value;
@@ -31,7 +38,7 @@ export const App: React.FC = () => {
 
 	const addPattern = React.useCallback(() => {
 		if (currentPattern.regex != null) {
-			setPatterns([...patterns, currentPattern.regex]);
+			setPatterns([...patterns, { regex: currentPattern.regex, isActive: true }]);
 			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
 	}, [currentPattern, patterns]);
@@ -45,55 +52,76 @@ export const App: React.FC = () => {
 
 	return (
 		<div className="h-[450px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
-			<h2 className="mb-2 text-xl font-semibold">Target patterns</h2>
+			<h2 className="mb-2 text-xl font-semibold">NoDox - Regex Patterns</h2>
 			<p className="mb-4 text-sm text-muted-foreground">
-				NoDox will blur any text matching these regex patterns. Add patterns to protect sensitive
-				information.
+				Enter regex patterns to automatically blur matching sensitive text.
 			</p>
+
 			<div className="rounded-md border">
-				<div className="flex items-center justify-between border-b p-3">
-					<h3 className="text-sm font-medium">Target patterns</h3>
+				<div className="flex flex-col gap-2 border-b-[1px] px-3 py-2">
+					<div className="flex w-full">
+						<RegexInput
+							value={currentPattern.raw}
+							onChange={handlePatternChange}
+							placeholder="Enter regex pattern"
+							containerClassName="mr-2 flex-grow"
+							variant={currentPattern.error == null ? 'default' : 'destructive'}
+						/>
+						<Button size="icon" onClick={addPattern} disabled={currentPattern.regex == null}>
+							<PlusCircledIcon className="h-4 w-4" />
+						</Button>
+					</div>
+					{currentPattern.error != null && (
+						<p className="text-sm text-destructive">{currentPattern.error}</p>
+					)}
 				</div>
-				<ul className="divide-y divide-border">
-					<li className="flex flex-col gap-2 px-3 py-2">
-						<div className="flex w-full">
-							<RegexInput
-								value={currentPattern.raw}
-								onChange={handlePatternChange}
-								placeholder="Enter regex pattern"
-								containerClassName="mr-2 flex-grow"
-								variant={currentPattern.error == null ? 'default' : 'destructive'}
-							/>
-							<Button size="icon" onClick={addPattern} disabled={currentPattern.regex == null}>
-								<PlusCircledIcon className="h-4 w-4" />
-							</Button>
-						</div>
-						{currentPattern.error != null && (
-							<p className="text-sm text-destructive">{currentPattern.error}</p>
-						)}
-					</li>
-					{patterns.map((pattern, index) => (
-						<li
-							key={`${index.toString()}-${pattern.source}`}
-							className="flex items-center justify-between px-3 py-2"
-						>
-							<div className="flex items-center">
-								<EyeOpenIcon className="mr-2 h-4 w-4 text-blue-500" />
-								<RegexText value={pattern.source} />
-							</div>
-							<Button
-								variant="ghost"
-								size="sm"
-								className="h-8 w-8 p-0"
-								onClick={() => {
-									removePattern(index);
-								}}
-							>
-								<MinusCircledIcon className="h-4 w-4" />
-							</Button>
-						</li>
-					))}
-				</ul>
+
+				{patterns.length > 0 ? (
+					<ScrollArea className="h-64">
+						<ul className="divide-y divide-border">
+							{patterns.map((pattern, index) => (
+								<li
+									key={`${index.toString()}-${pattern.regex.source}`}
+									className="flex items-center justify-between px-1 py-1"
+								>
+									<div className="flex items-center">
+										<Button
+											variant="ghost"
+											size="icon"
+											onClick={() => {
+												removePattern(index);
+											}}
+										>
+											<MinusCircledIcon className="h-4 w-4" />
+										</Button>
+										<ScrollArea className="w-56 overflow-visible">
+											<RegexText value={pattern.regex.source} className="pl-1" />
+											<ScrollBar orientation="horizontal" className="top-5" />
+										</ScrollArea>
+									</div>
+									<Toggle
+										pressed={pattern.isActive}
+										onPressedChange={(pressed) => {
+											pattern.isActive = pressed;
+											forceRender();
+										}}
+										className="hover:bg-transparent data-[state=on]:bg-transparent data-[state=on]:text-blue-500 data-[state=on]:hover:text-blue-400"
+									>
+										{pattern.isActive ? (
+											<EyeOpenIcon className="h-4 w-4" />
+										) : (
+											<EyeClosedIcon className="h-4 w-4" />
+										)}
+									</Toggle>
+								</li>
+							))}
+						</ul>
+					</ScrollArea>
+				) : (
+					<div className="flex h-64 items-center justify-center">
+						<p>No Regex patterns defined</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);
