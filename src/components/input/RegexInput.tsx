@@ -1,36 +1,24 @@
 import React from 'react';
+import { cn } from '@/lib';
 
+import { RegexText } from '../display';
 import { Input } from './Input';
 
 // https://akashhamirwasia.com/blog/building-highlighted-input-field-in-react/
 export const RegexInput = React.forwardRef<HTMLInputElement, TProps>((props, ref) => {
-	const { value, onChange, ...other } = props;
-	const highlightedValue = React.useMemo(
-		() =>
-			value.replace(/(?<temp1>\\.|[[\](){}^$*+?.|])/g, (match) => {
-				if (match.startsWith('\\')) {
-					return `<span style="color: #10B981;">${match}</span>`;
-				}
-				return `<span style="color: #3B82F6;">${match}</span>`;
-			}),
-		[value]
-	);
-	const containerRef = useRef<HTMLDivElement>(null);
+	const { value, onChange, className, ...other } = props;
+	const regexTextRef = useRef<HTMLDivElement>(null);
 
-	const syncScroll = React.useCallback((e: React.UIEvent<HTMLInputElement>) => {
-		if (containerRef.current != null) {
-			containerRef.current.scrollTop = e.currentTarget.scrollTop;
-			containerRef.current.scrollLeft = e.currentTarget.scrollLeft;
+	const syncScroll = useCallback((e: React.UIEvent<HTMLInputElement>) => {
+		if (regexTextRef.current) {
+			regexTextRef.current.scrollTop = e.currentTarget.scrollTop;
+			regexTextRef.current.scrollLeft = e.currentTarget.scrollLeft;
 		}
 	}, []);
 
 	return (
-		<div className="relative">
-			<div
-				ref={containerRef}
-				className="pointer-events-none absolute inset-0 overflow-hidden whitespace-pre px-3 py-2 font-mono text-sm"
-				dangerouslySetInnerHTML={{ __html: highlightedValue }}
-			/>
+		<div className={cn('relative', className)}>
+			<RegexText value={value} ref={regexTextRef} className="pointer-events-none absolute" />
 			<Input
 				{...other}
 				ref={ref}

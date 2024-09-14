@@ -2,4 +2,4 @@
 export * from './SpinnerIcon';
 
 // Third Party Icons
-export { PlusCircledIcon } from '@radix-ui/react-icons';
+export { EyeOpenIcon, MinusCircledIcon, PlusCircledIcon } from '@radix-ui/react-icons';

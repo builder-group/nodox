@@ -1,56 +1,84 @@
 import React from 'react';
-import { Button, Label, PlusCircledIcon, RegexInput } from '@/components';
-
-import { popupBridge } from './popup-bridge';
+import {
+	Button,
+	EyeOpenIcon,
+	MinusCircledIcon,
+	PlusCircledIcon,
+	RegexInput,
+	RegexText
+} from '@/components';
 
 export const App: React.FC = () => {
-	const onClick = React.useCallback(() => {
-		console.log('On Click');
-		(async () => {
-			const res = await popupBridge.sendMessageToBackground('say-hello', {
-				message: 'Hello from Popup'
-			});
+	const [patterns, setPatterns] = useState(['Benno', 'Jeff']);
+	const [isValidPattern, setValidPattern] = useState<boolean>(true);
+	const [currentPattern, setCurrentPattern] = useState('');
 
-			const installDate = await storage.getItem('local:installDate');
-
-			console.log({ res, installDate });
-		})().catch(() => {
-			// do nothing
-		});
-	}, []);
-
-	const [regex, setRegex] = useState<string>('');
-	const [isValid, setIsValid] = useState<boolean>(true);
-
-	const handleRegexChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
-		const newRegex = e.target.value;
-		setRegex(newRegex);
+	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
+		const currPattern = e.target.value;
+		setCurrentPattern(currPattern);
 		try {
-			const parsedRegex = new RegExp(newRegex);
-			setIsValid(true);
+			const parsedRegex = new RegExp(currPattern);
+			// TODO: Set parsed Regex as pattern?
+			setValidPattern(true);
 		} catch (error) {
-			setIsValid(false);
+			setValidPattern(false);
 		}
 	}, []);
 
+	const addPattern = () => {
+		if (currentPattern.length > 0) {
+			setPatterns([...patterns, currentPattern]);
+			setCurrentPattern('');
+		}
+	};
+
+	const removePattern = (index: number) => {
+		setPatterns(patterns.filter((_, i) => i !== index));
+	};
+
 	return (
-		<div className="flex h-[450px] w-[350px] flex-col overflow-hidden bg-background p-4 text-foreground">
-			<Button onClick={onClick}>Hello World 2</Button>
-			<div className="space-y-2">
-				<Label htmlFor="regex-input">Enter Regex Pattern</Label>
-				<div className="flex">
-					<RegexInput
-						id="regex-input"
-						value={regex}
-						onChange={handleRegexChange}
-						placeholder="Enter regex pattern"
-					/>
-					<Button size="icon" className="ml-2">
-						<PlusCircledIcon className="h-4 w-4" />
-					</Button>
+		<div className="h-[450px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
+			<h2 className="mb-2 text-xl font-semibold">Target patterns</h2>
+			<p className="mb-4 text-sm text-muted-foreground">
+				NoDox will blur any text matching these regex patterns. Add patterns to protect sensitive
+				information.
+			</p>
+			<div className="rounded-md border">
+				<div className="flex items-center justify-between border-b p-3">
+					<h3 className="text-sm font-medium">Target patterns</h3>
 				</div>
+				<ul className="divide-y divide-border">
+					<li className="flex items-center px-3 py-2">
+						<RegexInput
+							value={currentPattern}
+							onChange={handlePatternChange}
+							placeholder="Enter regex pattern"
+							className="mr-2 flex-grow"
+						/>
+						<Button size="icon" onClick={addPattern}>
+							<PlusCircledIcon className="h-4 w-4" />
+						</Button>
+					</li>
+					{patterns.map((pattern, index) => (
+						<li key={index} className="flex items-center justify-between px-3 py-2">
+							<div className="flex items-center">
+								<EyeOpenIcon className="mr-2 h-4 w-4 text-blue-500" />
+								<RegexText value={pattern} />
+							</div>
+							<Button
+								variant="ghost"
+								size="sm"
+								className="h-8 w-8 p-0"
+								onClick={() => {
+									removePattern(index);
+								}}
+							>
+								<MinusCircledIcon className="h-4 w-4" />
+							</Button>
+						</li>
+					))}
+				</ul>
 			</div>
-			{!isValid && <p className="mt-2 text-sm text-red-500">Invalid regex pattern</p>}
 		</div>
 	);
 };
