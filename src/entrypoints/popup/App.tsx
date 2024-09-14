@@ -10,7 +10,7 @@ import {
 
 export const App: React.FC = () => {
 	const [patterns, setPatterns] = useState(['Benno', 'Jeff']);
-	const [isValidPattern, setValidPattern] = useState<boolean>(true);
+	const [isValidPattern, setValidPattern] = useState(true);
 	const [currentPattern, setCurrentPattern] = useState('');
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -25,16 +25,19 @@ export const App: React.FC = () => {
 		}
 	}, []);
 
-	const addPattern = () => {
+	const addPattern = React.useCallback(() => {
 		if (currentPattern.length > 0) {
 			setPatterns([...patterns, currentPattern]);
 			setCurrentPattern('');
 		}
-	};
+	}, [currentPattern, patterns]);
 
-	const removePattern = (index: number) => {
-		setPatterns(patterns.filter((_, i) => i !== index));
-	};
+	const removePattern = React.useCallback(
+		(index: number) => {
+			setPatterns(patterns.filter((_, i) => i !== index));
+		},
+		[patterns]
+	);
 
 	return (
 		<div className="h-[450px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
@@ -48,16 +51,20 @@ export const App: React.FC = () => {
 					<h3 className="text-sm font-medium">Target patterns</h3>
 				</div>
 				<ul className="divide-y divide-border">
-					<li className="flex items-center px-3 py-2">
-						<RegexInput
-							value={currentPattern}
-							onChange={handlePatternChange}
-							placeholder="Enter regex pattern"
-							className="mr-2 flex-grow"
-						/>
-						<Button size="icon" onClick={addPattern}>
-							<PlusCircledIcon className="h-4 w-4" />
-						</Button>
+					<li className="flex flex-col gap-2 px-3 py-2">
+						<div className="flex w-full">
+							<RegexInput
+								value={currentPattern}
+								onChange={handlePatternChange}
+								placeholder="Enter regex pattern"
+								containerClassName="mr-2 flex-grow"
+								variant={isValidPattern ? 'default' : 'destructive'}
+							/>
+							<Button size="icon" onClick={addPattern} disabled={!isValidPattern}>
+								<PlusCircledIcon className="h-4 w-4" />
+							</Button>
+						</div>
+						{!isValidPattern && <p className="text-sm text-destructive">Invalid regex pattern</p>}
 					</li>
 					{patterns.map((pattern, index) => (
 						<li key={index} className="flex items-center justify-between px-3 py-2">

@@ -2,12 +2,12 @@ import React from 'react';
 import { cn } from '@/lib';
 
 import { RegexText } from '../display';
-import { Input } from './Input';
+import { AdvancedInput, type TAdvancedInputProps } from './AdvancedInput';
 
 // https://akashhamirwasia.com/blog/building-highlighted-input-field-in-react/
 export const RegexInput = React.forwardRef<HTMLInputElement, TProps>((props, ref) => {
-	const { value, onChange, className, ...other } = props;
-	const regexTextRef = useRef<HTMLDivElement>(null);
+	const { value, onChange, containerClassName, className, ...other } = props;
+	const regexTextRef = React.useRef<HTMLDivElement>(null);
 
 	const syncScroll = useCallback((e: React.UIEvent<HTMLInputElement>) => {
 		if (regexTextRef.current) {
@@ -17,15 +17,15 @@ export const RegexInput = React.forwardRef<HTMLInputElement, TProps>((props, ref
 	}, []);
 
 	return (
-		<div className={cn('relative', className)}>
+		<div className={cn('relative', containerClassName)}>
 			<RegexText value={value} ref={regexTextRef} className="pointer-events-none absolute" />
-			<Input
+			<AdvancedInput
 				{...other}
 				ref={ref}
 				value={value}
 				onChange={onChange}
 				onScroll={syncScroll}
-				className="relative bg-transparent font-mono"
+				className={cn('font-mono', className)}
 				style={{ color: 'transparent', caretColor: 'black' }}
 			/>
 		</div>
@@ -34,7 +34,8 @@ export const RegexInput = React.forwardRef<HTMLInputElement, TProps>((props, ref
 
 RegexInput.displayName = 'RegexInput';
 
-interface TProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TProps extends TAdvancedInputProps {
 	value: string;
 	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	containerClassName?: string;
 }
