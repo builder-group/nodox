@@ -1,4 +1,5 @@
 import React from 'react';
+import { extractErrorData } from '@blgc/utils';
 import {
 	Button,
 	EyeOpenIcon,
@@ -9,26 +10,29 @@ import {
 } from '@/components';
 
 export const App: React.FC = () => {
-	const [patterns, setPatterns] = useState(['Benno', 'Jeff']);
-	const [isValidPattern, setValidPattern] = useState(true);
-	const [currentPattern, setCurrentPattern] = useState('');
+	const [patterns, setPatterns] = useState<RegExp[]>([/Benno/, /Jeff/]);
+	const [currentPattern, setCurrentPattern] = useState<{
+		regex: RegExp | null;
+		raw: string;
+		error: string | null;
+	}>({ regex: null, raw: '', error: null });
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
-		const currPattern = e.target.value;
-		setCurrentPattern(currPattern);
+		const patternString = e.target.value;
+		let regexPattern: RegExp | null = null;
+		let error: string | null = null;
 		try {
-			const parsedRegex = new RegExp(currPattern);
-			// TODO: Set parsed Regex as pattern?
-			setValidPattern(true);
-		} catch (error) {
-			setValidPattern(false);
+			regexPattern = new RegExp(patternString, 'g');
+		} catch (err) {
+			error = extractErrorData(err).message;
 		}
+		setCurrentPattern({ regex: regexPattern, raw: patternString, error });
 	}, []);
 
 	const addPattern = React.useCallback(() => {
-		if (currentPattern.length > 0) {
-			setPatterns([...patterns, currentPattern]);
-			setCurrentPattern('');
+		if (currentPattern.regex != null) {
+			setPatterns([...patterns, currentPattern.regex]);
+			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
 	}, [currentPattern, patterns]);
 
@@ -54,23 +58,28 @@ export const App: React.FC = () => {
 					<li className="flex flex-col gap-2 px-3 py-2">
 						<div className="flex w-full">
 							<RegexInput
-								value={currentPattern}
+								value={currentPattern.raw}
 								onChange={handlePatternChange}
 								placeholder="Enter regex pattern"
 								containerClassName="mr-2 flex-grow"
-								variant={isValidPattern ? 'default' : 'destructive'}
+								variant={currentPattern.error == null ? 'default' : 'destructive'}
 							/>
-							<Button size="icon" onClick={addPattern} disabled={!isValidPattern}>
+							<Button size="icon" onClick={addPattern} disabled={currentPattern.regex == null}>
 								<PlusCircledIcon className="h-4 w-4" />
 							</Button>
 						</div>
-						{!isValidPattern && <p className="text-sm text-destructive">Invalid regex pattern</p>}
+						{currentPattern.error != null && (
+							<p className="text-sm text-destructive">{currentPattern.error}</p>
+						)}
 					</li>
 					{patterns.map((pattern, index) => (
-						<li key={index} className="flex items-center justify-between px-3 py-2">
+						<li
+							key={`${index.toString()}-${pattern.source}`}
+							className="flex items-center justify-between px-3 py-2"
+						>
 							<div className="flex items-center">
 								<EyeOpenIcon className="mr-2 h-4 w-4 text-blue-500" />
-								<RegexText value={pattern} />
+								<RegexText value={pattern.source} />
 							</div>
 							<Button
 								variant="ghost"
