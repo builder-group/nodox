@@ -4,12 +4,14 @@ import {
 	Button,
 	EyeClosedIcon,
 	EyeOpenIcon,
+	Label,
 	MinusCircledIcon,
 	PlusCircledIcon,
 	RegexInput,
 	RegexText,
 	ScrollArea,
 	ScrollBar,
+	Switch,
 	Toggle
 } from '@/components';
 
@@ -23,6 +25,7 @@ export const App: React.FC = () => {
 		error: string | null;
 	}>({ regex: null, raw: '', error: null });
 	const [, forceRender] = React.useReducer((s: number) => s + 1, 0);
+	const [isActive, setIsActive] = React.useState(true);
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
 		const patternString = e.target.value;
@@ -51,14 +54,14 @@ export const App: React.FC = () => {
 	);
 
 	return (
-		<div className="h-[450px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
+		<div className="h-[500px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
 			<h2 className="mb-2 text-xl font-semibold">NoDox - Regex Patterns</h2>
 			<p className="mb-4 text-sm text-muted-foreground">
 				Enter regex patterns to automatically blur matching sensitive text.
 			</p>
 
 			<div className="rounded-md border">
-				<div className="flex flex-col gap-2 border-b-[1px] px-3 py-2">
+				<div className="flex flex-col gap-2 border-b-[1px] px-2 py-2">
 					<div className="flex w-full">
 						<RegexInput
 							value={currentPattern.raw}
@@ -77,7 +80,7 @@ export const App: React.FC = () => {
 				</div>
 
 				{patterns.length > 0 ? (
-					<ScrollArea className="h-64">
+					<ScrollArea className="h-72">
 						<ul className="divide-y divide-border">
 							{patterns.map((pattern, index) => (
 								<li
@@ -118,10 +121,15 @@ export const App: React.FC = () => {
 						</ul>
 					</ScrollArea>
 				) : (
-					<div className="flex h-64 items-center justify-center">
+					<div className="flex h-72 items-center justify-center">
 						<p>No Regex patterns defined</p>
 					</div>
 				)}
+			</div>
+
+			<div className="mt-2 flex items-center space-x-2">
+				<Switch id="active" checked={isActive} onCheckedChange={setIsActive} />
+				<Label htmlFor="active">Active</Label>
 			</div>
 		</div>
 	);
