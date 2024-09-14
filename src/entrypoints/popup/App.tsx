@@ -1,3 +1,4 @@
+import { useGlobalState } from 'feature-react/state';
 import React from 'react';
 import { extractErrorData } from '@blgc/utils';
 import {
@@ -14,11 +15,10 @@ import {
 	Switch,
 	Toggle
 } from '@/components';
+import { $patterns } from '@/lib';
 
 export const App: React.FC = () => {
-	const [patterns, setPatterns] = useState<{ regex: RegExp; isActive: boolean }[]>([
-		{ regex: /Benno/, isActive: true }
-	]);
+	const patterns = useGlobalState($patterns);
 	const [currentPattern, setCurrentPattern] = useState<{
 		regex: RegExp | null;
 		raw: string;
@@ -41,14 +41,14 @@ export const App: React.FC = () => {
 
 	const addPattern = React.useCallback(() => {
 		if (currentPattern.regex != null) {
-			setPatterns([...patterns, { regex: currentPattern.regex, isActive: true }]);
+			$patterns.set([...patterns, { regex: currentPattern.regex, isActive: true }]);
 			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
 	}, [currentPattern, patterns]);
 
 	const removePattern = React.useCallback(
 		(index: number) => {
-			setPatterns(patterns.filter((_, i) => i !== index));
+			$patterns.set(patterns.filter((_, i) => i !== index));
 		},
 		[patterns]
 	);
@@ -98,7 +98,10 @@ export const App: React.FC = () => {
 											<MinusCircledIcon className="h-4 w-4" />
 										</Button>
 										<ScrollArea className="w-56 overflow-visible">
-											<RegexText value={pattern.regex.source} className="pl-1" />
+											<RegexText
+												value={`/${pattern.regex.source}/${pattern.regex.flags}`}
+												className="pl-1"
+											/>
 											<ScrollBar orientation="horizontal" className="top-5" />
 										</ScrollArea>
 									</div>

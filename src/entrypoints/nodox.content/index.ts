@@ -1,4 +1,5 @@
 import { defineContentScript } from 'wxt/sandbox';
+import { $patterns } from '@/lib';
 
 const BLUR_ATTRIBUTE = 'data-blurred';
 const BLACKLISTED_HTML_TAGS = [
@@ -21,7 +22,7 @@ const BLACKLISTED_HTML_TAGS = [
 	'embed'
 ];
 
-function blurMatchingElements(element: Element, patterns: RegExp[]): void {
+function blurMatchingElements(element: Element, regexPatterns: RegExp[]): void {
 	const toBlurNodes: Text[] = [];
 	const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
 
@@ -30,7 +31,7 @@ function blurMatchingElements(element: Element, patterns: RegExp[]): void {
 		const text = textNode.textContent;
 		if (
 			text != null &&
-			patterns.some((pattern) => pattern.test(text)) &&
+			regexPatterns.some((pattern) => pattern.test(text)) &&
 			!isParentBlacklisted(textNode)
 		) {
 			toBlurNodes.push(textNode);
@@ -66,19 +67,24 @@ export default defineContentScript({
 	matches: ['<all_urls>'],
 	runAt: 'document_start',
 	main() {
-		const patterns: RegExp[] = [/Benno/i];
+		let regexPatterns: RegExp[] = [];
 
 		const observer = new MutationObserver((mutations) => {
 			for (const mutation of mutations) {
 				if (mutation.type === 'childList') {
 					for (const node of mutation.addedNodes) {
 						if (node.nodeType === Node.ELEMENT_NODE) {
-							blurMatchingElements(node as Element, patterns);
+							blurMatchingElements(node as Element, regexPatterns);
 						}
 					}
 				}
 			}
 		});
 		observer.observe(document.documentElement, { childList: true, subtree: true });
+
+		$patterns.listen(({ value }) => {
+			regexPatterns = value.filter((pattern) => pattern.isActive).map((pattern) => pattern.regex);
+			blurMatchingElements(document.body, regexPatterns);
+		});
 	}
 });
