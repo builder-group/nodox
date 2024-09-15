@@ -25,7 +25,6 @@ export const App: React.FC = () => {
 		raw: string;
 		error: string | null;
 	}>({ regex: null, raw: '', error: null });
-	const [, forceRender] = React.useReducer((s: number) => s + 1, 0);
 	const [isActive, setIsActive] = React.useState(true);
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -43,19 +42,16 @@ export const App: React.FC = () => {
 	const addPattern = React.useCallback(() => {
 		if (currentPattern.regex != null) {
 			$patterns.set([
-				...patterns,
+				...$patterns.get(),
 				{ source: currentPattern.regex.source, flags: currentPattern.regex.flags, isActive: true }
 			]);
 			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
-	}, [currentPattern, patterns]);
+	}, [currentPattern]);
 
-	const removePattern = React.useCallback(
-		(index: number) => {
-			$patterns.set(patterns.filter((_, i) => i !== index));
-		},
-		[patterns]
-	);
+	const removePattern = React.useCallback((index: number) => {
+		$patterns.set($patterns.get().filter((_, i) => i !== index));
+	}, []);
 
 	return (
 		<div className="h-[500px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
@@ -111,14 +107,13 @@ export const App: React.FC = () => {
 										pressed={pattern.isActive}
 										onPressedChange={(pressed) => {
 											$patterns.set(
-												patterns.map((p, i) => {
+												$patterns.get().map((p, i) => {
 													if (i === index) {
 														return { ...p, isActive: pressed };
 													}
 													return p;
 												})
 											);
-											forceRender();
 										}}
 										className="text-blue-500 hover:bg-transparent hover:text-blue-400 data-[state=on]:bg-transparent data-[state=on]:text-gray-500 data-[state=on]:hover:text-gray-400"
 									>

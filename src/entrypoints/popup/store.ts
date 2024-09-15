@@ -6,22 +6,30 @@ import { popupBridge } from './popup-bridge';
 export const $patterns = withPersist(
 	createState<TPattern[]>([{ source: 'Benno', flags: 'g', isActive: true }]),
 	{
-		async load() {
-			const response = await popupBridge.sendMessageToContentOnActiveTab('get-patterns', undefined);
-			return response?.patterns ?? [];
+		async load(key) {
+			return (await storage.getItem<TPattern[]>(`local:${key}`)) ?? [];
 		},
-		async save(_, value) {
-			await popupBridge.sendMessageToContentOnAllTabs('updated-patterns', {
-				patterns: value
-			});
+		async save(key, value) {
+			await storage.setItem(`local:${key}`, value);
+			try {
+				await popupBridge.sendMessageToContentOnAllTabs('updated-patterns', undefined);
+			} catch (e) {
+				// do nothing
+			}
 			return true;
 		},
-		delete() {
-			// TODO
+		async delete(key) {
+			await storage.removeItem(`local:${key}`);
 			return true;
 		}
 	},
 	'patterns'
 );
 
-$patterns.persist();
+$patterns.persist().catch(() => {
+	// do nothing
+});
+
+$patterns.listen((value) => {
+	console.log('Changed', { value });
+});
