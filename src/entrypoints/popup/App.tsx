@@ -61,7 +61,8 @@ export const App: React.FC = () => {
 		<div className="h-[500px] w-[350px] overflow-y-auto bg-background p-4 text-foreground">
 			<h2 className="mb-2 text-xl font-semibold">NoDox - Regex Patterns</h2>
 			<p className="mb-4 text-sm text-muted-foreground">
-				Enter regex patterns to automatically blur matching sensitive text.
+				Enter regex patterns to blur matching text immediately. Reload the page to unblur text
+				matching removed or made visible patterns.
 			</p>
 
 			<div className="rounded-md border">
@@ -84,7 +85,7 @@ export const App: React.FC = () => {
 				</div>
 
 				{patterns.length > 0 ? (
-					<ScrollArea className="h-72">
+					<ScrollArea className="h-64">
 						<ul className="divide-y divide-border">
 							{patterns.map((pattern, index) => (
 								<li
@@ -109,15 +110,22 @@ export const App: React.FC = () => {
 									<Toggle
 										pressed={pattern.isActive}
 										onPressedChange={(pressed) => {
-											pattern.isActive = pressed;
+											$patterns.set(
+												patterns.map((p, i) => {
+													if (i === index) {
+														return { ...p, isActive: pressed };
+													}
+													return p;
+												})
+											);
 											forceRender();
 										}}
-										className="hover:bg-transparent data-[state=on]:bg-transparent data-[state=on]:text-blue-500 data-[state=on]:hover:text-blue-400"
+										className="text-blue-500 hover:bg-transparent hover:text-blue-400 data-[state=on]:bg-transparent data-[state=on]:text-gray-500 data-[state=on]:hover:text-gray-400"
 									>
 										{pattern.isActive ? (
-											<EyeOpenIcon className="h-4 w-4" />
-										) : (
 											<EyeClosedIcon className="h-4 w-4" />
+										) : (
+											<EyeOpenIcon className="h-4 w-4" />
 										)}
 									</Toggle>
 								</li>
@@ -125,7 +133,7 @@ export const App: React.FC = () => {
 						</ul>
 					</ScrollArea>
 				) : (
-					<div className="flex h-72 items-center justify-center">
+					<div className="flex h-64 items-center justify-center">
 						<p>No Regex patterns defined</p>
 					</div>
 				)}

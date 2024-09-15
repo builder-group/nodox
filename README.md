@@ -1,4 +1,6 @@
-# NoDox 
+<h1 align="center">
+    <img src="https://raw.githubusercontent.com/builder-group/nodox/develop/.github/banner.svg" alt="nodox banner">
+</h1>
 
 Chrome Extension to Keep Sensitive Information Hidden.
 
@@ -19,3 +21,8 @@ Chrome Extension to Keep Sensitive Information Hidden.
 
 ### Why are information in the Google Account popover not blurred
 Because its an iFrame..
+
+### Only blur patterns if screen is recorded
+Currently not possible.
+
+- [Stackoverflow](https://stackoverflow.com/questions/74711614/how-to-detect-if-user-is-screen-sharing-in-a-chrome-extension)
