@@ -32,7 +32,7 @@ export const App: React.FC = () => {
 		let regexPattern: RegExp | null = null;
 		let error: string | null = null;
 		try {
-			regexPattern = new RegExp(patternString, 'gi');
+			regexPattern = new RegExp(patternString, 'i');
 		} catch (err) {
 			error = extractErrorData(err).message;
 		}

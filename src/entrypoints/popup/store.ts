@@ -1,4 +1,4 @@
-import { createState, withStorage } from 'feature-state';
+import { createState, LOAD_FROM_STORAGE_SOURCE_KEY, withStorage } from 'feature-state';
 import { LocalStorageInterface } from '@/lib';
 import { type TPattern } from '@/types';
 
@@ -12,10 +12,12 @@ export const $patterns = withStorage(
 $patterns.persist().catch(() => {
 	// do nothing
 });
-$patterns.listen(() => {
-	popupBridge.sendMessageToContentOnAllTabs('updated-patterns', undefined).catch(() => {
-		// do nothing
-	});
+$patterns.listen(({ source }) => {
+	if (source !== LOAD_FROM_STORAGE_SOURCE_KEY) {
+		popupBridge.sendMessageToContentOnAllTabs('updated-patterns', undefined).catch(() => {
+			// do nothing
+		});
+	}
 });
 
 export const $isActive = withStorage(
@@ -26,8 +28,10 @@ export const $isActive = withStorage(
 $isActive.persist().catch(() => {
 	// do nothing
 });
-$isActive.listen(() => {
-	popupBridge.sendMessageToContentOnAllTabs('updated-is-active', undefined).catch(() => {
-		// do nothing
-	});
+$isActive.listen(({ source }) => {
+	if (source !== LOAD_FROM_STORAGE_SOURCE_KEY) {
+		popupBridge.sendMessageToContentOnAllTabs('updated-is-active', undefined).catch(() => {
+			// do nothing
+		});
+	}
 });
