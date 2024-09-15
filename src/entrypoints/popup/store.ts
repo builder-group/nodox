@@ -1,31 +1,23 @@
-import { createState, withPersist } from 'feature-state';
+import { createState, withStorage } from 'feature-state';
+import { LocalStorageInterface } from '@/lib';
 import { type TPattern } from '@/types';
 
 import { popupBridge } from './popup-bridge';
 
-export const $patterns = withPersist(
+export const $patterns = withStorage(
 	createState<TPattern[]>([{ source: 'Benno', flags: 'g', isActive: true }]),
-	{
-		async load(key) {
-			return (await storage.getItem<TPattern[]>(`local:${key}`)) ?? [];
-		},
-		async save(key, value) {
-			await storage.setItem(`local:${key}`, value);
-			try {
-				await popupBridge.sendMessageToContentOnAllTabs('updated-patterns', undefined);
-			} catch (e) {
-				// do nothing
-			}
-			return true;
-		},
-		async delete(key) {
-			await storage.removeItem(`local:${key}`);
-			return true;
-		}
-	},
+	new LocalStorageInterface<TPattern[]>(),
 	'patterns'
 );
 
 $patterns.persist().catch(() => {
 	// do nothing
 });
+
+$patterns.listen(() => {
+	popupBridge.sendMessageToContentOnAllTabs('updated-patterns', undefined).catch(() => {
+		// do nothing
+	});
+});
+
+export const $isActive = createState(false);

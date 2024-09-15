@@ -36,11 +36,11 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       feature-react:
-        specifier: ^0.0.23
-        version: 0.0.23(react@18.3.1)
-      feature-state:
         specifier: ^0.0.25
-        version: 0.0.25
+        version: 0.0.25(react@18.3.1)
+      feature-state:
+        specifier: ^0.0.27
+        version: 0.0.27
       lucide-react:
         specifier: ^0.441.0
         version: 0.441.0(react@18.3.1)
@@ -2026,13 +2026,13 @@ packages:
   fd-slicer@1.1.0:
     resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
 
-  feature-react@0.0.23:
-    resolution: {integrity: sha512-Jct/370nSNF5qIySvP2OYGZO7z8akzcgMV/ET2fntZm8KEVx82m4xpJS6JfFQ2tafVL5eMz9G6evEGqkIC2G/g==}
+  feature-react@0.0.25:
+    resolution: {integrity: sha512-PHfYkV3+Km+4BoBGZD3K7vSon9GLq9dBhnZP3kLQGOCXEVJAqIbQNN/dKsSeH/wqz4q+svDsvuLcuffSxJM+3g==}
     peerDependencies:
       react: ^18.3.1
 
-  feature-state@0.0.25:
-    resolution: {integrity: sha512-aQG5gDm4A+PEzC3ZG/KGtITPh3lC9tP7VQo4slxNqxK5/iJUpNO0Hb/QiXqlpxxKiD1hAdvYiav4rVxm/pqm+A==}
+  feature-state@0.0.27:
+    resolution: {integrity: sha512-q2Bt+F7qv2oSF5qiWLb6WbCbSeHOmCehcK4VmrP2QClmKMf8Y+qz4Lzw+IZfdckg0NW2pZnpFPljUxWnlJ1NwQ==}
 
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
@@ -6243,11 +6243,11 @@ snapshots:
     dependencies:
       pend: 1.2.0
 
-  feature-react@0.0.23(react@18.3.1):
+  feature-react@0.0.25(react@18.3.1):
     dependencies:
       react: 18.3.1
 
-  feature-state@0.0.25:
+  feature-state@0.0.27:
     dependencies:
       '@blgc/types': 0.0.7
       '@blgc/utils': 0.0.18

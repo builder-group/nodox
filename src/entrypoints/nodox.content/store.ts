@@ -1,18 +1,31 @@
-import { createState } from 'feature-state';
+import { createState, withStorage } from 'feature-state';
 import { storage } from 'wxt/storage';
 import { type TPattern } from '@/types';
 
 import { contentBridge } from './content-bridge';
 
-export const $patterns = createState<TPattern[]>([]);
+export const $patterns = withStorage(
+	createState<TPattern[]>([]),
+	{
+		async load(key) {
+			return (await storage.getItem<TPattern[]>(`local:${key}`)) ?? [];
+		},
+		save() {
+			return true;
+		},
+		delete() {
+			return true;
+		}
+	},
+	'patterns'
+);
 
-loadPatternsFormStorage().catch(() => {
+$patterns.persist().catch(() => {
 	// do nothing
 });
 
-contentBridge.listen('updated-patterns', loadPatternsFormStorage);
-
-async function loadPatternsFormStorage(): Promise<void> {
-	const patterns = (await storage.getItem<TPattern[]>(`local:patterns`)) ?? [];
-	$patterns.set(patterns);
-}
+contentBridge.listen('updated-patterns', () => {
+	$patterns.loadFormStorage().catch(() => {
+		// do nothing
+	});
+});
