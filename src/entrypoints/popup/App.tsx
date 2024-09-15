@@ -42,7 +42,10 @@ export const App: React.FC = () => {
 
 	const addPattern = React.useCallback(() => {
 		if (currentPattern.regex != null) {
-			$patterns.set([...patterns, { regex: currentPattern.regex, isActive: true }]);
+			$patterns.set([
+				...patterns,
+				{ source: currentPattern.regex.source, flags: currentPattern.regex.flags, isActive: true }
+			]);
 			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
 	}, [currentPattern, patterns]);
@@ -85,7 +88,7 @@ export const App: React.FC = () => {
 						<ul className="divide-y divide-border">
 							{patterns.map((pattern, index) => (
 								<li
-									key={`${index.toString()}-${pattern.regex.source}`}
+									key={`${index.toString()}-${pattern.source}`}
 									className="flex items-center justify-between px-1 py-1"
 								>
 									<div className="flex items-center">
@@ -99,10 +102,7 @@ export const App: React.FC = () => {
 											<MinusCircledIcon className="h-4 w-4" />
 										</Button>
 										<ScrollArea className="w-56 overflow-visible">
-											<RegexText
-												value={`/${pattern.regex.source}/${pattern.regex.flags}`}
-												className="pl-1"
-											/>
+											<RegexText value={`/${pattern.source}/${pattern.flags}`} className="pl-1" />
 											<ScrollBar orientation="horizontal" className="top-5" />
 										</ScrollArea>
 									</div>

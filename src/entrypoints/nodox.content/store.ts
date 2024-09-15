@@ -1,21 +1,15 @@
 import { createState, withPersist, type StorageInterface } from 'feature-state';
 import { storage } from 'wxt/storage';
-import {
-	serializePatterns,
-	unserializePatterns,
-	type TPattern,
-	type TSerializedPattern
-} from '@/lib';
+import { type TPattern } from '@/types';
 
 import { contentBridge } from './content-bridge';
 
 const localStorage: StorageInterface<TPattern[]> = {
 	async load(key) {
-		const serializedPatterns = (await storage.getItem<TSerializedPattern[]>(`local:${key}`)) ?? [];
-		return unserializePatterns(serializedPatterns);
+		return (await storage.getItem<TPattern[]>(`local:${key}`)) ?? [];
 	},
 	async save(key, value) {
-		await storage.setItem(`local:${key}`, serializePatterns(value));
+		await storage.setItem(`local:${key}`, value);
 		return true;
 	},
 	async delete(key) {
@@ -24,18 +18,14 @@ const localStorage: StorageInterface<TPattern[]> = {
 	}
 };
 
-export const $patterns = withPersist(
-	createState<TPattern[]>([{ regex: /Benno/g, isActive: true }]),
-	localStorage,
-	'patterns'
-);
+export const $patterns = withPersist(createState<TPattern[]>([]), localStorage, 'patterns');
 
 $patterns.persist();
 
 contentBridge.listen('updated-patterns', (payload) => {
-	$patterns.set(unserializePatterns(payload.patterns));
+	$patterns.set(payload.patterns);
 });
 
 contentBridge.listen('get-patterns', () => {
-	return { patterns: serializePatterns($patterns.get() as TPattern[]) };
+	return { patterns: $patterns.get() as TPattern[] };
 });

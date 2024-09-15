@@ -84,7 +84,9 @@ export default defineContentScript({
 		observer.observe(document.documentElement, { childList: true, subtree: true });
 
 		$patterns.listen(({ value }) => {
-			regexPatterns = value.filter((pattern) => pattern.isActive).map((pattern) => pattern.regex);
+			regexPatterns = value
+				.filter((pattern) => pattern.isActive)
+				.map((pattern) => new RegExp(pattern.source, pattern.flags));
 			blurMatchingElements(document.body, regexPatterns);
 		});
 	}
