@@ -66,7 +66,7 @@ function applyBlurToNode(node: Text): void {
 
 export default defineContentScript({
 	matches: ['<all_urls>'],
-	runAt: 'document_start',
+	runAt: 'document_start', // Run before document body was loaded and thus first paint
 	main() {
 		let regexPatterns: RegExp[] = [];
 

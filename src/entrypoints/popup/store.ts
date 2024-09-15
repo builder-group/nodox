@@ -29,7 +29,3 @@ export const $patterns = withPersist(
 $patterns.persist().catch(() => {
 	// do nothing
 });
-
-$patterns.listen((value) => {
-	console.log('Changed', { value });
-});

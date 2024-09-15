@@ -40,17 +40,15 @@ export const App: React.FC = () => {
 	}, []);
 
 	const addPattern = React.useCallback(() => {
-		if (currentPattern.regex != null) {
-			$patterns.set([
-				...$patterns.get(),
-				{ source: currentPattern.regex.source, flags: currentPattern.regex.flags, isActive: true }
-			]);
+		const regex = currentPattern.regex;
+		if (regex != null) {
+			$patterns.set((v) => [...v, { source: regex.source, flags: regex.flags, isActive: true }]);
 			setCurrentPattern({ regex: null, raw: '', error: null });
 		}
 	}, [currentPattern]);
 
 	const removePattern = React.useCallback((index: number) => {
-		$patterns.set($patterns.get().filter((_, i) => i !== index));
+		$patterns.set((v) => v.filter((_, i) => i !== index));
 	}, []);
 
 	return (
@@ -71,7 +69,11 @@ export const App: React.FC = () => {
 							containerClassName="mr-2 flex-grow"
 							variant={currentPattern.error == null ? 'default' : 'destructive'}
 						/>
-						<Button size="icon" onClick={addPattern} disabled={currentPattern.regex == null}>
+						<Button
+							size="icon"
+							onClick={addPattern}
+							disabled={currentPattern.regex == null || currentPattern.raw.trim().length === 0}
+						>
 							<PlusCircledIcon className="h-4 w-4" />
 						</Button>
 					</div>
@@ -106,8 +108,8 @@ export const App: React.FC = () => {
 									<Toggle
 										pressed={pattern.isActive}
 										onPressedChange={(pressed) => {
-											$patterns.set(
-												$patterns.get().map((p, i) => {
+											$patterns.set((v) =>
+												v.map((p, i) => {
 													if (i === index) {
 														return { ...p, isActive: pressed };
 													}

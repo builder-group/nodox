@@ -28,7 +28,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"feature-react": "^0.0.23",
-		"feature-state": "^0.0.23",
+		"feature-state": "^0.0.25",
 		"lucide-react": "^0.441.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
@@ -39,17 +39,17 @@
 	"devDependencies": {
 		"@blgc/config": "^0.0.23",
 		"@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-		"@types/react": "^18.3.3",
+		"@types/react": "^18.3.5",
 		"@types/react-dom": "^18.3.0",
-		"@wxt-dev/module-react": "^1.1.0",
+		"@wxt-dev/module-react": "^1.1.1",
 		"autoprefixer": "^10.4.20",
 		"eslint": "^8.57.0",
-		"postcss": "^8.4.45",
+		"postcss": "^8.4.47",
 		"prettier": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.6",
 		"tailwindcss": "^3.4.11",
-		"typescript": "^5.5.4",
-		"wxt": "^0.19.1"
+		"typescript": "^5.6.2",
+		"wxt": "^0.19.9"
 	},
 	"packageManager": "pnpm@9.2.0",
 	"pnpm": {
