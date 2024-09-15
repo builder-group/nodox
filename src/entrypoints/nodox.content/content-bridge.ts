@@ -1,4 +1,4 @@
 import { ContentBridge } from '@/lib';
-import { type TP2BUpdatedPatterns } from '@/types';
+import { type TP2CUpdatedIsActive, type TP2CUpdatedPatterns } from '@/types';
 
-export const contentBridge = new ContentBridge<any, TP2BUpdatedPatterns>();
+export const contentBridge = new ContentBridge<any, TP2CUpdatedPatterns | TP2CUpdatedIsActive>();

@@ -1,6 +1,6 @@
 import { defineContentScript } from 'wxt/sandbox';
 
-import { $patterns } from './store';
+import { $isActive, $patterns } from './store';
 
 const BLUR_ATTRIBUTE = 'data-blurred';
 const BLACKLISTED_HTML_TAGS = [
@@ -22,6 +22,46 @@ const BLACKLISTED_HTML_TAGS = [
 	'object',
 	'embed'
 ];
+
+export default defineContentScript({
+	matches: ['<all_urls>'],
+	runAt: 'document_start', // Run before document body was loaded and thus first paint
+	main() {
+		let regexPatterns: RegExp[] = [];
+
+		const observer = new MutationObserver((mutations) => {
+			if (!$isActive.get()) {
+				return;
+			}
+
+			for (const mutation of mutations) {
+				if (mutation.type === 'childList') {
+					for (const node of mutation.addedNodes) {
+						if (node.nodeType === Node.ELEMENT_NODE) {
+							blurMatchingElements(node as Element, regexPatterns);
+						}
+					}
+				}
+			}
+		});
+		observer.observe(document.documentElement, { childList: true, subtree: true });
+
+		$patterns.listen(({ value }) => {
+			regexPatterns = value
+				.filter((pattern) => pattern.isActive)
+				.map((pattern) => new RegExp(pattern.source, pattern.flags));
+			blurMatchingElements(document.body, regexPatterns);
+		});
+
+		$isActive.listen(({ value }) => {
+			if (value) {
+				blurMatchingElements(document.body, regexPatterns);
+			} else {
+				unblurAllElements();
+			}
+		});
+	}
+});
 
 function blurMatchingElements(element: Element, regexPatterns: RegExp[]): void {
 	const toBlurNodes: Text[] = [];
@@ -64,30 +104,14 @@ function applyBlurToNode(node: Text): void {
 	node.replaceWith(span);
 }
 
-export default defineContentScript({
-	matches: ['<all_urls>'],
-	runAt: 'document_start', // Run before document body was loaded and thus first paint
-	main() {
-		let regexPatterns: RegExp[] = [];
+function unblurAllElements(): void {
+	const blurredElements = document.querySelectorAll(`[${BLUR_ATTRIBUTE}]`);
 
-		const observer = new MutationObserver((mutations) => {
-			for (const mutation of mutations) {
-				if (mutation.type === 'childList') {
-					for (const node of mutation.addedNodes) {
-						if (node.nodeType === Node.ELEMENT_NODE) {
-							blurMatchingElements(node as Element, regexPatterns);
-						}
-					}
-				}
-			}
-		});
-		observer.observe(document.documentElement, { childList: true, subtree: true });
-
-		$patterns.listen(({ value }) => {
-			regexPatterns = value
-				.filter((pattern) => pattern.isActive)
-				.map((pattern) => new RegExp(pattern.source, pattern.flags));
-			blurMatchingElements(document.body, regexPatterns);
-		});
+	for (const element of blurredElements) {
+		if (element instanceof HTMLElement) {
+			const originalText = element.textContent ?? '';
+			const textNode = document.createTextNode(originalText);
+			element.replaceWith(textNode);
+		}
 	}
-});
+}

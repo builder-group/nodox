@@ -16,7 +16,7 @@ import {
 	Toggle
 } from '@/components';
 
-import { $patterns } from './store';
+import { $isActive, $patterns } from './store';
 
 export const App: React.FC = () => {
 	const patterns = useGlobalState($patterns);
@@ -25,7 +25,7 @@ export const App: React.FC = () => {
 		raw: string;
 		error: string | null;
 	}>({ regex: null, raw: '', error: null });
-	const [isActive, setIsActive] = React.useState(true);
+	const isActive = useGlobalState($isActive);
 
 	const handlePatternChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>): void => {
 		const patternString = e.target.value;
@@ -137,7 +137,13 @@ export const App: React.FC = () => {
 			</div>
 
 			<div className="mt-2 flex items-center space-x-2">
-				<Switch id="active" checked={isActive} onCheckedChange={setIsActive} />
+				<Switch
+					id="active"
+					checked={isActive}
+					onCheckedChange={(checked) => {
+						$isActive.set(checked);
+					}}
+				/>
 				<Label htmlFor="active">Active</Label>
 			</div>
 		</div>

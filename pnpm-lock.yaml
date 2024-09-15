@@ -39,8 +39,8 @@ importers:
         specifier: ^0.0.25
         version: 0.0.25(react@18.3.1)
       feature-state:
-        specifier: ^0.0.27
-        version: 0.0.27
+        specifier: ^0.0.28
+        version: 0.0.28
       lucide-react:
         specifier: ^0.441.0
         version: 0.441.0(react@18.3.1)
@@ -2031,8 +2031,8 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  feature-state@0.0.27:
-    resolution: {integrity: sha512-q2Bt+F7qv2oSF5qiWLb6WbCbSeHOmCehcK4VmrP2QClmKMf8Y+qz4Lzw+IZfdckg0NW2pZnpFPljUxWnlJ1NwQ==}
+  feature-state@0.0.28:
+    resolution: {integrity: sha512-qndynfCVVwDNg6p5TnqvZ9SdE5zKYtopi9E9YYKCoYi1gH8BWaDlKxjbA204BMqJ0kH9D/Fyi10eDqMpVvmxxQ==}
 
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
@@ -6247,7 +6247,7 @@ snapshots:
     dependencies:
       react: 18.3.1
 
-  feature-state@0.0.27:
+  feature-state@0.0.28:
     dependencies:
       '@blgc/types': 0.0.7
       '@blgc/utils': 0.0.18
