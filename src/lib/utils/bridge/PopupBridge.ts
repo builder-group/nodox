@@ -1,5 +1,6 @@
-import type { Runtime } from 'wxt/browser';
+import type { Runtime, Tabs } from 'wxt/browser';
 
+import { queryActiveTab, queryTabs } from '../tabs';
 import {
 	type TBridgeMessage,
 	type TBridgeMessagePayload,
@@ -31,6 +32,45 @@ export class PopupBridge<GSend extends TBridgeMessage, GReceive extends TBridgeM
 				console.warn(`No handler found for message type: ${message.type}`);
 				return false;
 			}
+		);
+	}
+
+	// Send message from popup to content
+	// https://developer.chrome.com/docs/extensions/develop/concepts/messaging#simple
+	public async sendMessageToContent<GType extends TBridgeMessageType<GSend, 'content'>>(
+		tabId: number,
+		type: GType,
+		payload: TBridgeMessagePayload<GSend, 'content', GType>,
+		options?: Tabs.SendMessageOptionsType
+	): Promise<TBridgeMessageResponse<GSend, 'content', GType>> {
+		console.log(`[Send | p->c | ${tabId.toString()}] ${type}`, { payload });
+		return browser.tabs.sendMessage(tabId, { type, payload, target: 'content' }, options);
+	}
+
+	public async sendMessageToContentOnActiveTab<GType extends TBridgeMessageType<GSend, 'content'>>(
+		type: GType,
+		payload: TBridgeMessagePayload<GSend, 'content', GType>,
+		options?: Tabs.SendMessageOptionsType
+	): Promise<TBridgeMessageResponse<GSend, 'content', GType> | null> {
+		const tab = await queryActiveTab();
+		if (tab?.id != null) {
+			return this.sendMessageToContent(tab.id, type, payload, options);
+		}
+		return null;
+	}
+
+	public async sendMessageToContentOnAllTabs<GType extends TBridgeMessageType<GSend, 'content'>>(
+		type: GType,
+		payload: TBridgeMessagePayload<GSend, 'content', GType>,
+		options?: Tabs.SendMessageOptionsType
+	): Promise<void> {
+		const tabs = await queryTabs();
+		await Promise.all(
+			tabs
+				.filter((tab) => tab.id != null)
+				.map((tab) =>
+					this.sendMessageToContent(tab.id as unknown as number, type, payload, options)
+				)
 		);
 	}
 

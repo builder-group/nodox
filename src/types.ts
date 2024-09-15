@@ -1,8 +1,14 @@
-import { type TBridgeMessage } from './lib';
+import { type TBridgeMessage, type TSerializedPattern } from '@/lib';
 
-export type TP2BSayHelloMessage = TBridgeMessage<
-	'background',
-	'say-hello',
-	{ message: string },
-	{ id: string }
+export type TP2BUpdatedPatterns = TBridgeMessage<
+	'content',
+	'updated-patterns',
+	{ patterns: TSerializedPattern[] }
+>;
+
+export type TP2BGetPatterns = TBridgeMessage<
+	'content',
+	'get-patterns',
+	undefined,
+	{ patterns: TSerializedPattern[] }
 >;

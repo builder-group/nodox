@@ -1,7 +1,7 @@
 import { type Runtime, type Tabs } from 'wxt/browser';
 
 import { hasOffscreenDocument } from '../offscreen';
-import { queryActiveTab } from '../query-active-tab';
+import { queryActiveTab, queryTabs } from '../tabs';
 import {
 	type TBridgeMessage,
 	type TBridgeMessagePayload,
@@ -58,6 +58,21 @@ export class BackgroundBridge<GSend extends TBridgeMessage, GReceive extends TBr
 			return this.sendMessageToContent(tab.id, type, payload, options);
 		}
 		return null;
+	}
+
+	public async sendMessageToContentOnAllTabs<GType extends TBridgeMessageType<GSend, 'content'>>(
+		type: GType,
+		payload: TBridgeMessagePayload<GSend, 'content', GType>,
+		options?: Tabs.SendMessageOptionsType
+	): Promise<void> {
+		const tabs = await queryTabs();
+		await Promise.all(
+			tabs
+				.filter((tab) => tab.id != null)
+				.map((tab) =>
+					this.sendMessageToContent(tab.id as unknown as number, type, payload, options)
+				)
+		);
 	}
 
 	// Send message from background to popup

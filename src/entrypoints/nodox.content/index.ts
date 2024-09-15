@@ -1,5 +1,6 @@
 import { defineContentScript } from 'wxt/sandbox';
-import { $patterns } from '@/lib';
+
+import { $patterns } from './store';
 
 const BLUR_ATTRIBUTE = 'data-blurred';
 const BLACKLISTED_HTML_TAGS = [

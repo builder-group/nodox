@@ -1,4 +1,4 @@
 import { PopupBridge } from '@/lib';
-import { type TP2BSayHelloMessage } from '@/types';
+import { type TP2BGetPatterns, type TP2BUpdatedPatterns } from '@/types';
 
-export const popupBridge = new PopupBridge<TP2BSayHelloMessage, any>();
+export const popupBridge = new PopupBridge<TP2BUpdatedPatterns | TP2BGetPatterns, any>();

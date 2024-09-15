@@ -15,7 +15,8 @@ import {
 	Switch,
 	Toggle
 } from '@/components';
-import { $patterns } from '@/lib';
+
+import { $patterns } from './store';
 
 export const App: React.FC = () => {
 	const patterns = useGlobalState($patterns);
