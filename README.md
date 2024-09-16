@@ -2,12 +2,23 @@
     <img src="https://raw.githubusercontent.com/builder-group/nodox/develop/.github/banner.svg" alt="nodox banner">
 </h1>
 
-Chrome Extension to BLUR Sensitive Information based on Regex Patterns.
+Keep your sensitive data private while sharing your screen or recording videos. NoDox automatically blurs text based on customizable Regex patterns, perfect for streamers, professionals, and educators.
+
+- Blurs personal information (emails, names, etc.) on websites
+- Easy-to-use, with customizable Regex patterns
+
+# 📖 Usage
+
+TODO video
 
 ## 🙅‍♂️ Limitiations
 
-- Content in [`IFrames`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) can't be blurred
-- Only Text Content can be blurred
+- Cannot blur content inside [`IFrames`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
+- Only blurs text content
+
+## ⚠️ Disclaimer
+
+While this extension has been tested and works effectively in most cases, it cannot guarantee that every instance of sensitive information will be blurred on every website. Website structures and designs vary, making it challenging to identify all elements with 100% accuracy. If you encounter any issues or unblurred content, please provide feedback to help improve the extension.
 
 ## ⚖️  Alternatives
 
@@ -19,17 +30,10 @@ Chrome Extension to BLUR Sensitive Information based on Regex Patterns.
 - [TextRedactor](https://github.com/t18n/chrome-extension-text-redactor)
 - [BlurWeb](https://www.blurweb.app/)
 
-## Potential Users
-
-- [Extension or script to hide/alter sensitive info such as full name, email etc when streaming.](https://www.reddit.com/r/chrome/comments/r8ua5o/extension_or_script_to_hidealter_sensitive_info/)
-- [any addons for hiding sensitive information?](https://www.reddit.com/r/edge/comments/14bb7ft/any_addons_for_hiding_sensitive_information/)
-
 ## ❓ FAQ
 
-### Why are information in the Google Account popover not blurred
-Because its an iFrame..
+### Why can't Google Account popover data be blurred?
+It is embedded within an iFrame.
 
-### Only blur patterns if screen is recorded
-Currently not possible.
-
-- [Stackoverflow](https://stackoverflow.com/questions/74711614/how-to-detect-if-user-is-screen-sharing-in-a-chrome-extension)
+### Can it blur patterns only during screen recording?
+Not possible at this time. [Learn more](https://stackoverflow.com/questions/74711614/how-to-detect-if-user-is-screen-sharing-in-a-chrome-extension).

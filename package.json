@@ -1,6 +1,6 @@
 {
 	"name": "nodox",
-	"description": "Chrome Extension to Keep Sensitive Information Hidden",
+	"description": "Nodox - Blur Sensitive Information",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
