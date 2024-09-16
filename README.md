@@ -7,7 +7,7 @@ Keep your sensitive data private while sharing your screen or recording videos. 
 - Blurs personal information (emails, names, etc.) on websites
 - Easy-to-use, with customizable Regex patterns
 
-# 📖 Usage
+## 📖 Usage
 
 [![Usage Video](https://img.youtube.com/vi/pWdafQL6YHg/0.jpg)](https://www.youtube.com/watch?v=pWdafQL6YHg)
 
