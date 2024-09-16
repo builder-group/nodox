@@ -9,7 +9,7 @@ Keep your sensitive data private while sharing your screen or recording videos. 
 
 # 📖 Usage
 
-TODO video
+[![Usage Video](https://img.youtube.com/vi/pWdafQL6YHg/0.jpg)](https://www.youtube.com/watch?v=pWdafQL6YHg)
 
 ## 🙅‍♂️ Limitiations
 
