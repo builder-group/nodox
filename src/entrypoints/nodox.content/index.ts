@@ -63,7 +63,13 @@ export default defineContentScript({
 	}
 });
 
-function blurMatchingElements(element: Element, regexPatterns: RegExp[]): void {
+function blurMatchingElements(element: Element | null, regexPatterns: RegExp[]): void {
+	// Tree walker requires Element of instance Node
+	if (element == null || !(element instanceof Node)) {
+		console.warn('Element is not an instance of Node', { element });
+		return;
+	}
+
 	const toBlurNodes: Text[] = [];
 	const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
 
